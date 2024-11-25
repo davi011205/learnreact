@@ -1,0 +1,46 @@
+body {
+    background-color: grey;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.img {
+    width: 300px;
+    height: 300px;
+    margin-top: 50px;
+}
+
+.timer {
+    font-size: 50px;
+    margin-top: -150px;
+}
+
+.botoes {
+    margin-top: 70px;
+    
+    button {
+        font-size: 1.2rem;
+        border-radius: 8px;
+        margin: 0 5px;
+        padding: 4px;
+        cursor: pointer;
+
+    }
+
+    button:hover {
+        opacity: 0.7;
+        transition: all 0.5s;
+    }
+}
+
+/* .textoFrase {
+    font-style: italic;
+    color: #dd7b22;
+    text-align: center;
+} */
