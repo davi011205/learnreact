@@ -12,14 +12,17 @@ class Cronometro extends Component {
         hora: 0,
         minuto: 0,
         segundo: 0
-       }
+       },
+       voltas: [],
+       
       }
-  
+
       this.timer = null;
       this.pause = false;
   
       this.iniciar = this.iniciar.bind(this);
       this.pausar = this.pausar.bind(this);
+      this.volta = this.volta.bind(this);
       this.limpar = this.limpar.bind(this);
     }
   
@@ -67,6 +70,15 @@ class Cronometro extends Component {
   
       this.setState({pause: true})
     }
+
+    volta() {
+
+      let {relogio, voltas} = this.state; //desconstroi os obj
+
+      this.setState({
+        voltas: [...voltas, {...relogio}] //adiciona as voltas ja existentes + o tempo que o relogio esta marcando
+      })
+    }
   
     limpar() {
       let cronometro = {
@@ -74,7 +86,7 @@ class Cronometro extends Component {
         minuto: 0,
         segundo: 0
       }
-      this.setState({relogio: cronometro});
+      this.setState({relogio: cronometro, voltas: []});
       this.pausar();
     }
   
@@ -87,14 +99,36 @@ class Cronometro extends Component {
 
             <div className="botoes">
                 {this.state.relogio.segundo === 0 ?
-                    <button onClick={this.iniciar}>Iniciar</button>
-                    : this.state.pause ? 
-                    <div>
-                        <button onClick={this.iniciar}>Retomar</button>
-                        <button onClick={this.limpar}>Zerar</button>
-                    </div>
-                    : <button onClick={this.pausar}>Pausar</button>
+                  <button onClick={this.iniciar}>Iniciar</button>
+                  : this.state.pause ? 
+                  <div>
+                      <button onClick={this.iniciar}>Retomar</button>
+                      <button onClick={this.limpar}>Zerar</button>
+                  </div>
+                  : 
+                  <div>
+                    <button onClick={this.pausar}>Pausar</button>
+                    <button onClick={this.volta}>Volta</button>
+                  </div>
                 } 
+                <div>
+                    <table>
+                      <thead>
+                        <tr aria-colspan={2}>Voltas</tr>
+                      </thead>
+                      <tbody>
+                        {this.state.voltas.map( (item, index) => {
+                          return(
+                            <tr key={index}>
+                              <td>{index + 1}</td> {/*numero da volta */}
+                              <td>{`${item.hora}:${item.minuto}:${item.segundo.toFixed(2)}`}</td> {/*tempo da volta*/}
+                            </tr>
+                        )
+              
+                        })}
+                      </tbody>
+                    </table>
+                </div>
             </div>
         </div>
       )
