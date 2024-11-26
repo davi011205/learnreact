@@ -473,26 +473,102 @@
 
 
 // ----------projeto cronometro----------
-import React, { Component } from "react";
-import './estilos.css';
-import Cronometro from "./components/cronometro";
+// import React, { Component } from "react";
+// import './estilos.css';
+// import Cronometro from "./components/cronometro";
 
-class App extends Component {
+// class App extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
    
-     }
-    }
+//      }
+//     }
 
-  render() {
+//   render() {
+//     return (
+//       <div className="container">
+//         <Cronometro></Cronometro>
+//       </div>
+//     )
+//   }
+// }
+
+// export default App;
+
+
+//----------React hooks----------
+//----------api useState menos verbosidade para tratar estados----------
+//----------api useEffect substitui os ciclos de vida ----------
+//----------api useMemo usada para chamar funcao so quando necessario ----------
+//----------api useCallback usada para chamar funcao so quando necessario ----------
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import './estilos.css';
+
+function App () {
+  //const [nome da state, funcao que atualiza a state] = useState(valor que inicializa por padrao)
+  const [tarefas, setTarefas] = useState([]);
+  const [tarefaDigitada, setTarefaDigitada] = useState('');
+
+  //equivalente ao componentDidMount
+  //quando deixa vazio ele executa automaticamente
+  useEffect(() => {
+    const tarefasStorage = localStorage.tarefas;
+
+    if(tarefasStorage) {
+      setTarefas(JSON.parse(tarefasStorage));
+    } 
+
+ 
+  }, [])
+
+  //equivalente ao componentDidUpDate
+  //2 parametros, funcao q vai ser executada, array(state que ele monitora por ex)
+  //toda vez q a state tarefas sofrer alteração ele executa a função
+  useEffect(() => {
+    localStorage.tarefas = JSON.stringify(tarefas);
+  }, [tarefas])
+
+  //forma tradicional, porem assim ele recria sempre que ha alteração na state(ao digitar por ex)
+  // function handleAdd () {
+  //   setTarefas([...tarefas, tarefaDigitada])
+  //   setTarefaDigitada('')
+  // }
+
+  //para melhorar o desempenho, consumindo menos processamento usamos o useCallback
+  //o useCallback deve receber como parametro todos os states que sao utilizados nele
+  const handleAdd = useCallback(() => {
+    setTarefas([...tarefas, tarefaDigitada])
+    setTarefaDigitada('')
+  }, [tarefas, tarefaDigitada])
+
+  // qual funcao chamada quando a state é mudada, retorna um valor unico
+  const totalTarefas = useMemo(() => tarefas.length, [tarefas])
+
+  //parecido com o useMemo, porem pode retornar uma funcao complexa
+
     return (
       <div className="container">
-        <Cronometro></Cronometro>
+        <ul>
+          {tarefas.map((item, indice) => {
+            return (
+              <li key={indice}>{item}</li>
+            )
+          })}
+        </ul>
+        <strong>voce tem {totalTarefas} tarefas</strong>
+        <div>
+
+        <input type="text" 
+          placeholder="qual tarefa deseja adicionar" 
+          value={tarefaDigitada}
+          onChange={(e) => setTarefaDigitada(e.target.value)}
+        />
+        <button onClick={handleAdd}>adicionar</button>
+        </div>
       </div>
     )
-  }
 }
 
 export default App;
