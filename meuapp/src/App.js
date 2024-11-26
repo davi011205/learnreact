@@ -503,70 +503,117 @@
 //----------api useEffect substitui os ciclos de vida ----------
 //----------api useMemo usada para chamar funcao so quando necessario ----------
 //----------api useCallback usada para chamar funcao so quando necessario ----------
+// import React, { useState, useEffect, useMemo, useCallback } from "react";
+// import './estilos.css';
+
+// function App () {
+//   //const [nome da state, funcao que atualiza a state] = useState(valor que inicializa por padrao)
+//   const [tarefas, setTarefas] = useState([]);
+//   const [tarefaDigitada, setTarefaDigitada] = useState('');
+
+//   //equivalente ao componentDidMount
+//   //quando deixa vazio ele executa automaticamente
+//   useEffect(() => {
+//     const tarefasStorage = localStorage.tarefas;
+
+//     if(tarefasStorage) {
+//       setTarefas(JSON.parse(tarefasStorage));
+//     } 
+
+ 
+//   }, [])
+
+//   //equivalente ao componentDidUpDate
+//   //2 parametros, funcao q vai ser executada, array(state que ele monitora por ex)
+//   //toda vez q a state tarefas sofrer alteração ele executa a função
+//   useEffect(() => {
+//     localStorage.tarefas = JSON.stringify(tarefas);
+//   }, [tarefas])
+
+//   //forma tradicional, porem assim ele recria sempre que ha alteração na state(ao digitar por ex)
+//   // function handleAdd () {
+//   //   setTarefas([...tarefas, tarefaDigitada])
+//   //   setTarefaDigitada('')
+//   // }
+
+//   //para melhorar o desempenho, consumindo menos processamento usamos o useCallback
+//   //o useCallback deve receber como parametro todos os states que sao utilizados nele
+//   const handleAdd = useCallback(() => {
+//     setTarefas([...tarefas, tarefaDigitada])
+//     setTarefaDigitada('')
+//   }, [tarefas, tarefaDigitada])
+
+//   // qual funcao chamada quando a state é mudada, retorna um valor unico
+//   const totalTarefas = useMemo(() => tarefas.length, [tarefas])
+
+//   //parecido com o useMemo, porem pode retornar uma funcao complexa
+
+//     return (
+//       <div className="container">
+//         <ul>
+//           {tarefas.map((item, indice) => {
+//             return (
+//               <li key={indice}>{item}</li>
+//             )
+//           })}
+//         </ul>
+//         <strong>voce tem {totalTarefas} tarefas</strong>
+//         <div>
+
+//         <input type="text" 
+//           placeholder="qual tarefa deseja adicionar" 
+//           value={tarefaDigitada}
+//           onChange={(e) => setTarefaDigitada(e.target.value)}
+//         />
+//         <button onClick={handleAdd}>adicionar</button>
+//         </div>
+//       </div>
+//     )
+// }
+
+// export default App;
+
+
+
+//----------Requisicoes HTTP ----------
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import './estilos.css';
 
+
+
+
 function App () {
-  //const [nome da state, funcao que atualiza a state] = useState(valor que inicializa por padrao)
-  const [tarefas, setTarefas] = useState([]);
-  const [tarefaDigitada, setTarefaDigitada] = useState('');
-
-  //equivalente ao componentDidMount
-  //quando deixa vazio ele executa automaticamente
+  const [nutri, setNutri] = useState([])
+  
   useEffect(() => {
-    const tarefasStorage = localStorage.tarefas;
-
-    if(tarefasStorage) {
-      setTarefas(JSON.parse(tarefasStorage));
-    } 
-
- 
+    function loadApi() {
+      const api = 'https://sujeitoprogramador.com/rn-api/?api=posts';
+      fetch(api)
+      .then((resposta) => resposta.json())
+      .then((json) => {
+        setNutri(json);
+      })
+    }
+    
+    loadApi();  
   }, [])
 
-  //equivalente ao componentDidUpDate
-  //2 parametros, funcao q vai ser executada, array(state que ele monitora por ex)
-  //toda vez q a state tarefas sofrer alteração ele executa a função
-  useEffect(() => {
-    localStorage.tarefas = JSON.stringify(tarefas);
-  }, [tarefas])
-
-  //forma tradicional, porem assim ele recria sempre que ha alteração na state(ao digitar por ex)
-  // function handleAdd () {
-  //   setTarefas([...tarefas, tarefaDigitada])
-  //   setTarefaDigitada('')
-  // }
-
-  //para melhorar o desempenho, consumindo menos processamento usamos o useCallback
-  //o useCallback deve receber como parametro todos os states que sao utilizados nele
-  const handleAdd = useCallback(() => {
-    setTarefas([...tarefas, tarefaDigitada])
-    setTarefaDigitada('')
-  }, [tarefas, tarefaDigitada])
-
-  // qual funcao chamada quando a state é mudada, retorna um valor unico
-  const totalTarefas = useMemo(() => tarefas.length, [tarefas])
-
-  //parecido com o useMemo, porem pode retornar uma funcao complexa
 
     return (
       <div className="container">
-        <ul>
-          {tarefas.map((item, indice) => {
-            return (
-              <li key={indice}>{item}</li>
-            )
-          })}
-        </ul>
-        <strong>voce tem {totalTarefas} tarefas</strong>
-        <div>
-
-        <input type="text" 
-          placeholder="qual tarefa deseja adicionar" 
-          value={tarefaDigitada}
-          onChange={(e) => setTarefaDigitada(e.target.value)}
-        />
-        <button onClick={handleAdd}>adicionar</button>
-        </div>
+        <header>
+          <strong>React Nutri</strong>
+        </header>
+        {nutri.map((item) => {
+          return(
+            <article key={item.id} className="post">
+              <strong className="titulo">{item.titulo}</strong>
+              <img src={item.capa} alt="" className="capa"></img>
+              <p className="subtitulo">{item.subtitulo}</p>
+              <a className="botao">Acessar</a>
+            </article>
+          )
+        })}
       </div>
     )
 }
