@@ -576,45 +576,56 @@
 
 
 //----------Requisicoes HTTP ----------
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import './estilos.css';
+// import React, { useState, useEffect, useMemo, useCallback } from "react";
+// import './estilos.css';
+
+// function App () {
+//   const [nutri, setNutri] = useState([])
+  
+//   useEffect(() => {
+//     function loadApi() {
+//       const api = 'https://sujeitoprogramador.com/rn-api/?api=posts';
+//       fetch(api)
+//       .then((resposta) => resposta.json())
+//       .then((json) => {
+//         setNutri(json);
+//       })
+//     }
+    
+//     loadApi();  
+//   }, [])
+
+
+//     return (
+//       <div className="container">
+//         <header>
+//           <strong>React Nutri</strong>
+//         </header>
+//         {nutri.map((item) => {
+//           return(
+//             <article key={item.id} className="post">
+//               <strong className="titulo">{item.titulo}</strong>
+//               <img src={item.capa} alt="" className="capa"></img>
+//               <p className="subtitulo">{item.subtitulo}</p>
+//               <a className="botao">Acessar</a>
+//             </article>
+//           )
+//         })}
+//       </div>
+//     )
+// }
+
+// export default App;
 
 
 
+//----------ROTAS ----------
+import RoutesApp from "./routes";
 
 function App () {
-  const [nutri, setNutri] = useState([])
-  
-  useEffect(() => {
-    function loadApi() {
-      const api = 'https://sujeitoprogramador.com/rn-api/?api=posts';
-      fetch(api)
-      .then((resposta) => resposta.json())
-      .then((json) => {
-        setNutri(json);
-      })
-    }
-    
-    loadApi();  
-  }, [])
-
-
+ 
     return (
-      <div className="container">
-        <header>
-          <strong>React Nutri</strong>
-        </header>
-        {nutri.map((item) => {
-          return(
-            <article key={item.id} className="post">
-              <strong className="titulo">{item.titulo}</strong>
-              <img src={item.capa} alt="" className="capa"></img>
-              <p className="subtitulo">{item.subtitulo}</p>
-              <a className="botao">Acessar</a>
-            </article>
-          )
-        })}
-      </div>
+      <RoutesApp/>
     )
 }
 
