@@ -1,0 +1,64 @@
+.erro-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 50px);
+
+    .img-erro {
+        width: 40%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .texto {
+        width: 60%;
+        text-align: center;
+
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+
+        .texto-voltar {
+            p:first-child{
+                margin-bottom: 10px;
+            }
+            
+            a {
+                color: black;
+                animation: pulsar 2.5s ease-in-out infinite alternate;
+            }
+        }
+    }
+
+
+}
+
+@keyframes pulsar {
+    /* 0% {
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.2;
+    }
+    40% {
+        opacity: 0.4;
+    }
+    60% {
+        opacity: 0.6;
+    }
+    80% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: ;
+    } */
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
