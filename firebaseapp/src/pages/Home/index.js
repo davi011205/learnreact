@@ -1,10 +1,11 @@
 import { db } from "../../firebaseConfig";
-import { doc, setDoc, collection, addDoc, getDoc} from 'firebase/firestore'
+import { doc, setDoc, collection, addDoc, getDoc, getDocs } from 'firebase/firestore'
 import { useState } from 'react'
 import { toast } from "react-toastify";
 
 function Home() {
     const [fields, setFields] = useState({});
+    const [users, setUsers] = useState([]);
 
     const handleChange = (e) => {
         setFields({...fields, [e.target.name]: e.target.value});
@@ -35,25 +36,35 @@ function Home() {
     }
 
     async function  buscarUsuario() {
-        const userRef = doc(db, 'users', '5vB27HVL9aOArf3qjm6X')
-
-
-            // await getDoc(userRef)
-            // .then((snapshot) => {
-            //     setFields({nome: snapshot.data().nome, idade: snapshot.data().idade})
-            // })
-            // .catch(() => {
-            //     console.log('n deu bom')
-            // })
-
-            try {
-                let response = await getDoc(userRef)
-                setFields({nome: response.data().nome, idade: response.data().idade})
-            }
-            catch{
-                console.log('n deu bom')
-            }
+        //pegar especifico
+        // const userRef = doc(db, 'users', '5vB27HVL9aOArf3qjm6X')
         
+        // await getDoc(userRef)
+        // .then((snapshot) => {
+        //     setFields({nome: snapshot.data().nome, idade: snapshot.data().idade})
+        // })
+        // .catch(() => {
+        //     console.log('n deu bom')
+        // })
+
+        //pegar todos
+        const usersRef = collection(db, 'users');
+            await getDocs(usersRef)
+            .then((snapshot) => {
+                let lista = [];
+
+                snapshot.forEach((doc) => {
+                    lista.push({
+                        id: doc.id,
+                        nome: doc.data().nome,
+                        idade: doc.data().idade
+                    })
+                })
+                setUsers(lista)
+            })
+        .catch((error) => {
+            toast.error('nao foi possivel carregar os usuários')
+        })
     }
 
     return(
@@ -69,6 +80,16 @@ function Home() {
             </form>
 
             <button onClick={buscarUsuario}>Buscar usuario</button>
+            <ul>
+                {users.map((user) => {
+                    return(
+                        <li key={user.id}>
+                            <h1>nome: {user.nome}</h1>
+                            <h1>idade: {user.idade}</h1>
+                        </li>
+                    )
+                })}
+            </ul>
         </div>
     )
 }
