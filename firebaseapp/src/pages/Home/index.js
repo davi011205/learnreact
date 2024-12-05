@@ -14,9 +14,13 @@ import {
 
 import { toast } from "react-toastify";
 
+import './home.css'
+
 function Home() {
     const [fields, setFields] = useState({});
     const [users, setUsers] = useState([]);
+    const [showForm, setShowForm] = useState(false);
+    const [showEditForm, setShowEditForm] = useState(false);
 
     useEffect(() => {
        async function loadUsers() { //um snapshot que verifica em tempo real a coleção de users
@@ -58,6 +62,7 @@ function Home() {
             })
             toast.success('usuario cadastrado com sucesso');
             setFields({nome: '', idade: ''});
+            setShowForm(false)
         }
 
         catch(error) {
@@ -101,8 +106,23 @@ function Home() {
     }
 
 
-    async function editarUsuario() {
+    async function selectedUser(id) {
+        const docRef = doc(db, 'users', id)
+        
+        await getDoc(docRef)
+        .then((snapshot) => {
+            setFields({nome: snapshot.data().nome, idade: snapshot.data().idade, idUser: id})
+            setShowEditForm(true)
+        })
+        .catch(() => {
+            toast.error('nao foi possivel pasar os dados')
+        })
+    }
+
+    async function editarUsuario(e) {
+        e.preventDefault()
         const docRef = doc(db, 'users', fields.idUser)
+        
         await updateDoc(docRef, {
             idade: fields.idade,
             nome: fields.nome
@@ -110,7 +130,7 @@ function Home() {
         .then(() => {
             toast.success('usuario atualizado com sucesso')
             setFields({nome: '', idade: '', idUser: ''})
-       
+            setShowEditForm(false)
         })
         .catch(() => {
             toast.error('nao foi possivel atualizar')
@@ -130,11 +150,16 @@ function Home() {
     }
 
     return(
-        <div>
-            <h1>Cadastre um novo usuario</h1>
-     
+        <div className='home-container'>
+            <header>
+                <h1>Usuarios</h1>    
+                <div>
+                    <button onClick={() => setShowForm(true)}>Cadastrar Usuario</button>
+                    <button>Buscar Usuario</button>
+                </div>
+            </header>
+{/*      
                 Id do Usuario
-                {/* <input type='text' name="idUser" value={fields.idUser} onChange={handleChange}></input> <br/><br/> */}
                 <select name="idUser" value={fields.idUser} onChange={handleChange}>
                     <option>selecione um usuario</option>
                     {users.map((user) => {
@@ -142,28 +167,69 @@ function Home() {
                             <option key={user.id}>{user.id}</option>
                         )
                     })}
-                </select>
-                <br/><br/>
-                Nome
-                <input type='text' name="nome" value={fields.nome} onChange={handleChange}></input> <br/><br/>
-                Idade
-                <input type='number' name="idade" value={fields.idade} onChange={handleChange}></input> <br/><br/>
+                </select> */}
+                
+                {showForm && (
 
-                <button onClick={handleAdd}>Cadastrar</button>
-                <button onClick={buscarUsuario}>Buscar usuario</button>
-                <button onClick={editarUsuario}>Editar usuario</button>
-            <ul>
-                {users.map((user) => {
-                    return(
-                        <li key={user.id}>
-                            <span>{user.id}</span>
-                            <h1>nome: {user.nome}</h1>
-                            <h1>idade: {user.idade}</h1>
-                            <button onClick={ () => excluirUsuario(user.id) }>Excluir</button>
-                        </li>
-                    )
-                })}
-            </ul>
+                    <div className='form-container'>
+                        <form onSubmit={handleAdd} className='form'>
+                            <p onClick={() => setShowForm(false)}>x</p>
+                            
+                            Nome 
+                            <input type='text' name="nome" value={fields.nome} onChange={handleChange}></input>
+                            Idade
+                            <input type='number' name="idade" value={fields.idade} onChange={handleChange}></input>
+                            <button type='submit'>Cadastrar </button>
+                        </form>
+                    </div>
+                )
+                
+                }
+                {showEditForm && (
+
+                    <div className='form-container'>
+                        <form onSubmit={editarUsuario} className='form'>
+                            <p onClick={() => setShowEditForm(false)}>x</p>
+                            
+                            Nome 
+                            <input type='text' name="nome" value={fields.nome} onChange={handleChange}></input>
+                            Idade
+                            <input type='number' name="idade" value={fields.idade} onChange={handleChange}></input>
+                            <button type='submit'>Editar </button>
+                        </form>
+                    </div>
+                )
+                
+                }
+                
+            <div className='container-tabela'>
+                <h1>Lista dos Usuarios</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>id</td>
+                            <td>Nome</td>
+                            <td>idade</td>
+                            <td>acao</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {users.map((user) => {
+                            return(
+                                <tr key={user.id}>
+                                    <td>{user.id}</td>
+                                    <td>{user.nome}</td>
+                                    <td>{user.idade}</td>
+                                    <td colSpan={2}>
+                                        <button onClick={ () => excluirUsuario(user.id) }>Excluir</button>
+                                        <button onClick={() => selectedUser(user.id)}>Editar usuario</button>
+                                    </td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }
