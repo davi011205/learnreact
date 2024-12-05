@@ -17,7 +17,8 @@ import { toast } from "react-toastify";
 import './home.css'
 
 function Home() {
-    const [fields, setFields] = useState({});
+    const [cadastroFields, setCadastroFields] = useState({});
+    const [editFields, setEditFields] = useState({});
     const [users, setUsers] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
@@ -40,9 +41,11 @@ function Home() {
        loadUsers()
     }, [])
 
-    const handleChange = (e) => {
-        setFields({...fields, [e.target.name]: e.target.value});
-        console.log(setFields);
+    const handleCadChange = (e) => {
+        setCadastroFields({...cadastroFields, [e.target.name]: e.target.value});
+    }
+    const handleEditChange = (e) => {
+        setEditFields({...editFields, [e.target.name]: e.target.value});
     }
     
     async function handleAdd(e) {
@@ -57,11 +60,11 @@ function Home() {
 
             //gera id automaticamente
             await addDoc(collection(db, 'users'), {
-                nome: fields.nome,
-                idade: fields.idade,
+                nome: cadastroFields.nome,
+                idade: cadastroFields.idade,
             })
             toast.success('usuario cadastrado com sucesso');
-            setFields({nome: '', idade: ''});
+            setCadastroFields({nome: '', idade: ''});
             setShowForm(false)
         }
 
@@ -92,18 +95,18 @@ function Home() {
     //     })
     // }
 
-    async function  buscarUsuario() {
-        //pegar especifico
-        const userRef = doc(db, 'users', fields.idUser)
+    // async function  buscarUsuario() {
+    //     //pegar especifico
+    //     const userRef = doc(db, 'users', fields.idUser)
         
-        await getDoc(userRef)
-        .then((snapshot) => {
-            setFields({nome: snapshot.data().nome, idade: snapshot.data().idade})
-        })
-        .catch(() => {
-            toast.error('usuario nao encontrado')
-        })
-    }
+    //     await getDoc(userRef)
+    //     .then((snapshot) => {
+    //         setFields({nome: snapshot.data().nome, idade: snapshot.data().idade})
+    //     })
+    //     .catch(() => {
+    //         toast.error('usuario nao encontrado')
+    //     })
+    // }
 
 
     async function selectedUser(id) {
@@ -111,7 +114,7 @@ function Home() {
         
         await getDoc(docRef)
         .then((snapshot) => {
-            setFields({nome: snapshot.data().nome, idade: snapshot.data().idade, idUser: id})
+            setEditFields({nome: snapshot.data().nome, idade: snapshot.data().idade, idUser: id})
             setShowEditForm(true)
         })
         .catch(() => {
@@ -121,15 +124,15 @@ function Home() {
 
     async function editarUsuario(e) {
         e.preventDefault()
-        const docRef = doc(db, 'users', fields.idUser)
+        const docRef = doc(db, 'users', editFields.idUser)
         
         await updateDoc(docRef, {
-            idade: fields.idade,
-            nome: fields.nome
+            idade: editFields.idade,
+            nome: editFields.nome
         })
         .then(() => {
             toast.success('usuario atualizado com sucesso')
-            setFields({nome: '', idade: '', idUser: ''})
+            setEditFields({nome: '', idade: '', idUser: ''})
             setShowEditForm(false)
         })
         .catch(() => {
@@ -176,9 +179,9 @@ function Home() {
                             <p onClick={() => setShowForm(false)}>x</p>
                             
                             Nome 
-                            <input type='text' name="nome" value={fields.nome} onChange={handleChange}></input>
+                            <input type='text' name="nome" value={cadastroFields.nome} onChange={handleCadChange}></input>
                             Idade
-                            <input type='number' name="idade" value={fields.idade} onChange={handleChange}></input>
+                            <input type='number' name="idade" value={cadastroFields.idade} onChange={handleCadChange}></input>
                             <button type='submit'>Cadastrar </button>
                         </form>
                     </div>
@@ -192,9 +195,9 @@ function Home() {
                             <p onClick={() => setShowEditForm(false)}>x</p>
                             
                             Nome 
-                            <input type='text' name="nome" value={fields.nome} onChange={handleChange}></input>
+                            <input type='text' name="nome" value={editFields.nome} onChange={handleEditChange}></input>
                             Idade
-                            <input type='number' name="idade" value={fields.idade} onChange={handleChange}></input>
+                            <input type='number' name="idade" value={editFields.idade} onChange={handleEditChange}></input>
                             <button type='submit'>Editar </button>
                         </form>
                     </div>
