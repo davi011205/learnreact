@@ -65,36 +65,38 @@ function Home() {
         }
     }
 
+    // async function  buscarUsuarios() {
+    //     //pegar todos
+    //     const usersRef = collection(db, 'users');
+    //         await getDocs(usersRef)
+    //         .then((snapshot) => {
+    //             let lista = [];
+
+    //             snapshot.forEach((doc) => {
+    //                 lista.push({
+    //                     id: doc.id,
+    //                     nome: doc.data().nome,
+    //                     idade: doc.data().idade
+    //                 })
+    //             })
+    //             setUsers(lista)
+                
+    //         })
+    //     .catch(() => {
+    //         toast.error('nao foi possivel carregar os usuários')
+    //     })
+    // }
+
     async function  buscarUsuario() {
         //pegar especifico
-        // const userRef = doc(db, 'users', '5vB27HVL9aOArf3qjm6X')
+        const userRef = doc(db, 'users', 'lLrzHBXac0BvPcraMe9n')
         
-        // await getDoc(userRef)
-        // .then((snapshot) => {
-        //     setFields({nome: snapshot.data().nome, idade: snapshot.data().idade})
-        // })
-        // .catch(() => {
-        //     console.log('n deu bom')
-        // })
-
-        //pegar todos
-        const usersRef = collection(db, 'users');
-            await getDocs(usersRef)
-            .then((snapshot) => {
-                let lista = [];
-
-                snapshot.forEach((doc) => {
-                    lista.push({
-                        id: doc.id,
-                        nome: doc.data().nome,
-                        idade: doc.data().idade
-                    })
-                })
-                setUsers(lista)
-                
-            })
+        await getDoc(userRef)
+        .then((snapshot) => {
+            setFields({nome: snapshot.data().nome, idade: snapshot.data().idade})
+        })
         .catch(() => {
-            toast.error('nao foi possivel carregar os usuários')
+            toast.error('usuario nao encontrado')
         })
     }
 
