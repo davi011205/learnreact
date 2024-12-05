@@ -89,7 +89,7 @@ function Home() {
 
     async function  buscarUsuario() {
         //pegar especifico
-        const userRef = doc(db, 'users', 'lLrzHBXac0BvPcraMe9n')
+        const userRef = doc(db, 'users', fields.idUser)
         
         await getDoc(userRef)
         .then((snapshot) => {
