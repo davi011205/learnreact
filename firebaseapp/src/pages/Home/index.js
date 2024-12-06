@@ -14,7 +14,8 @@ import {
 import { 
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
-    signOut
+    signOut, 
+    onAuthStateChanged
 } from 'firebase/auth'
 
 import { toast } from "react-toastify";
@@ -48,6 +49,22 @@ function Home() {
         })
        }
        loadUsers()
+    }, [])
+
+    useEffect(() => {
+        async function checkLogin() {
+            onAuthStateChanged(auth, (user) => {
+                if(user) {
+                    console.log(user)
+                    setUserSistema(true)
+                    setUserSistemaDetails({uid: user.uid, email: user.email})
+                } else {
+                    setUserSistema(false)
+                    setUserSistemaDetails({})
+                }
+            })
+        }
+        checkLogin()
     }, [])
 
     const handleCadChange = (e) => {
@@ -233,6 +250,9 @@ function Home() {
                     <button onClick={() => setShowForm(true)}>Cadastrar Usuario</button>
                     <button>Buscar Usuario</button>
                 </div>
+       
+                        <p>id: {userSistemaDetails.uid} email: {userSistemaDetails.email}</p>
+                   
             </header>
  
             <div className='cadastroUsuario'>
