@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { db } from "../../firebaseConfig";
+import { auth, db } from "../../firebaseConfig";
 import { 
     doc, 
     setDoc, 
@@ -11,6 +11,10 @@ import {
     deleteDoc, 
     onSnapshot
 } from 'firebase/firestore';
+import { 
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
+} from 'firebase/auth'
 
 import { toast } from "react-toastify";
 
@@ -19,7 +23,11 @@ import './home.css'
 function Home() {
     const [cadastroFields, setCadastroFields] = useState({});
     const [editFields, setEditFields] = useState({});
+    const [createUserFields, setCreateUserFields] = useState({});
+    const [loginUserFields, setLoginUserFields] = useState({});
     const [users, setUsers] = useState([]);
+    const [userSistema, setUserSistema] = useState(false)
+    const [userSistemaDetails, setUserSistemaDetails] = useState({})
     const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
 
@@ -46,6 +54,12 @@ function Home() {
     }
     const handleEditChange = (e) => {
         setEditFields({...editFields, [e.target.name]: e.target.value});
+    }
+    const handleCreateUserChange = (e) => {
+        setCreateUserFields({...createUserFields, [e.target.name]: e.target.value});
+    }
+    const handleLoginUserChange = (e) => {
+        setLoginUserFields({...loginUserFields, [e.target.name]: e.target.value});
     }
     
     async function handleAdd(e) {
@@ -152,6 +166,52 @@ function Home() {
 
     }
 
+    async function createUser(){
+        await createUserWithEmailAndPassword(auth, createUserFields.email, createUserFields.password)
+        .then(() => {
+            toast.success('usuario cadastrado com sucesso')
+            setCreateUserFields({email: '', password: ''})
+        })
+        .catch((error) => {
+            switch (error.code) {
+                case 'auth/weak-password': 
+                    toast.error('a senha deve ter no minimo 6 digitos')
+                    break;
+                case 'auth/email-alredy-in-use': 
+                    toast.error('o email ja existe')
+                    break;
+                default: console.log('houve um erro fora do escopo') ;
+            }
+            
+        })
+    }
+
+    async function loginUser(){
+        await signInWithEmailAndPassword(auth, loginUserFields.email, loginUserFields.password)
+        .then((user) => {
+            console.log(user.user)
+            setUserSistemaDetails({
+                uid: user.user.uid,
+                email: user.user.email   
+            })
+            setLoginUserFields({email: '', password: ''})
+            setUserSistema(true)
+            toast.success(`Bem vindo ao sistema`)
+        })
+        .catch((error) => {
+            switch (error.code) {
+                case 'auth/weak-password': 
+                    toast.error('a senha deve ter no minimo 6 digitos')
+                    break;
+                case 'auth/email-alredy-in-use': 
+                    toast.error('o email ja existe')
+                    break;
+                default: console.log('houve um erro fora do escopo') ;
+            }
+            
+        })
+    }
+
     return(
         <div className='home-container'>
             <header>
@@ -161,6 +221,26 @@ function Home() {
                     <button>Buscar Usuario</button>
                 </div>
             </header>
+ 
+            <div className='cadastroUsuario'>
+                <label>Email</label>
+                <input type='email' name='email' value={createUserFields.email} onChange={handleCreateUserChange}/>
+
+                <label>Senha</label>
+                <input type='password' name='password' value={createUserFields.password} onChange={handleCreateUserChange}/>
+
+                <button onClick={createUser}>cadastrar</button>
+            </div>
+            <hr/>
+            <div className='loginUsuario'>
+                <label>Email</label>
+                <input type='email' name='email' value={loginUserFields.email} onChange={handleLoginUserChange}/>
+
+                <label>Senha</label>
+                <input type='password' name='password' value={loginUserFields.password} onChange={handleLoginUserChange}/>
+
+                <button onClick={loginUser}>Entrar</button>
+            </div>
 {/*      
                 Id do Usuario
                 <select name="idUser" value={fields.idUser} onChange={handleChange}>
@@ -205,34 +285,36 @@ function Home() {
                 
                 }
                 
-            <div className='container-tabela'>
-                <h1>Lista dos Usuarios</h1>
-                <table>
-                    <thead>
-                        <tr>
-                            <td>id</td>
-                            <td>Nome</td>
-                            <td>idade</td>
-                            <td>acao</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map((user) => {
-                            return(
-                                <tr key={user.id}>
-                                    <td>{user.id}</td>
-                                    <td>{user.nome}</td>
-                                    <td>{user.idade}</td>
-                                    <td colSpan={2}>
-                                        <button onClick={ () => excluirUsuario(user.id) }>Excluir</button>
-                                        <button onClick={() => selectedUser(user.id)}>Editar usuario</button>
-                                    </td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>
+            {userSistema  && (
+                <div className='container-tabela'>
+                    <h1>Lista dos Usuarios</h1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>id</td>
+                                <td>Nome</td>
+                                <td>idade</td>
+                                <td>acao</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {users.map((user) => {
+                                return(
+                                    <tr key={user.id}>
+                                        <td>{user.id}</td>
+                                        <td>{user.nome}</td>
+                                        <td>{user.idade}</td>
+                                        <td colSpan={2}>
+                                            <button onClick={ () => excluirUsuario(user.id) }>Excluir</button>
+                                            <button onClick={() => selectedUser(user.id)}>Editar usuario</button>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     )
 }
