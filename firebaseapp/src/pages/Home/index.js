@@ -13,7 +13,8 @@ import {
 } from 'firebase/firestore';
 import { 
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    signOut
 } from 'firebase/auth'
 
 import { toast } from "react-toastify";
@@ -212,6 +213,18 @@ function Home() {
         })
     }
 
+    async function logout() {
+        await signOut(auth)
+        .then(() => {
+            setUserSistema(false)
+            setUserSistemaDetails({})
+            toast.success('usuario deslogado com sucesso')
+        })
+        .catch(() => {
+            toast.error('nao foi possivel sair da sua conta')
+        })
+    }
+
     return(
         <div className='home-container'>
             <header>
@@ -287,6 +300,7 @@ function Home() {
                 
             {userSistema  && (
                 <div className='container-tabela'>
+                    <button onClick={logout}>Logout</button>
                     <h1>Lista dos Usuarios</h1>
                     <table>
                         <thead>
