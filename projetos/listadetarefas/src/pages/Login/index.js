@@ -1,8 +1,8 @@
-import { use, useState } from 'react';
-import { db, auth } from '../../services/firebaseConfig';
+import { useState } from 'react';
+import { auth } from '../../services/firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
-import { Link, replace, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {toast} from 'react-toastify'
 
 import './login.css'
@@ -15,26 +15,34 @@ function Login() {
         setFields({...fields, [e.target.name]: e.target.value})
     }
 
-    async function userLogin() {
-        await signInWithEmailAndPassword(auth, fields.email, fields.password)
-        .then(() => {
-            toast.success('Bem vindo ao sistema')
-            navigate('/home', {replace: true})
-        })
-        .catch((error) => {
-            switch (error.code) {
-                case 'auth/weak-password': 
-                    toast.error('a senha deve ter no minimo 6 digitos')
-                    break;
-             
-                default: console.log('houve um erro fora do escopo') ;
-            }
-            
-        })
+    async function userLogin(e) {
+        e.preventDefault()
+
+        if(fields.email && fields.password) {
+            await signInWithEmailAndPassword(auth, fields.email, fields.password)
+            .then(() => {
+                toast.success('Bem vindo ao sistema')
+                navigate('/home', {replace: true})
+            })
+            .catch((error) => {
+                console.log(error)
+                switch (error.code) {
+                    case 'auth/invalid-credential': 
+                        toast.error('usuário ou senha incorretos')
+                        break;
+                 
+                    default: console.log('houve um erro fora do escopo') ;
+                }
+                
+            })
+        } else {
+            toast.error('preencha todos os campos')
+        }
+        
     }
 
     return  (
-        <div className='container-login'>
+        <div className='container-login container'>
             <header>
                 <h1>Lista de Tarefas</h1>
                 <h2>Gerencia sua agenda de forma facil</h2>
