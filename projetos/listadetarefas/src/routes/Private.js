@@ -45,6 +45,6 @@ function Private({ children }){
     return <Navigate to="/"/>
   }
 
-  return children;
+  return children; //retorna o que tem dentro da tag, no caso o componente home
 }
 export default Private;

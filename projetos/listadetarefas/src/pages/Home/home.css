@@ -1,21 +1,73 @@
-.container-home{
+.container-home { 
     background-color: black;
     color: white;
-
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: center;
-
     width: 100%;
     height: 100vh;
+    margin-top: 48px;
 
-    textArea {
-       aspect-ratio: 6/1;
-       padding: 4px;
+    .btn-logout {
+        position: absolute;
+        top: 6%;
+        right: 4%;
+        height: 60px;
+        width: 60px;
+        border-radius: 30px;
+        border: 0;
+        font-weight: bold;
+        background-color: rgba(219, 38, 41, 0.35);
+        color: white;
+        transition: all 0.5s;
+        
+        
+        &:hover {
+            background-color: rgba(219, 38, 41,1);
+        }
     }
 
-    textArea, button {
+    form {
+
+        textArea {
+           aspect-ratio: 6/1;
+           padding: 4px;
+        }
+    
+        textArea, button {
+            border-radius: 4px;
+        }
+    }
+
+    article {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 90%;
+        max-width: 600px;
+        margin-top: 30px;
+        margin-bottom: 12px;
+        background-color: rgb(18,18,18,0.38);
         border-radius: 4px;
+        padding: 14px 8px;
+
+        p {
+            margin-bottom: 8px;
+        }
+
+        button {
+            margin-right: 8px;
+            border: 0;
+            border-radius: 4px;
+            padding: 4px;
+            cursor: pointer;
+        }
+
+        .conclui {
+            color: #ffcc23;
+            background-color: transparent;
+        }
     }
+
 }

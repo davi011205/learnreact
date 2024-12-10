@@ -9,6 +9,8 @@ import './login.css'
 
 function Login() {
     const [fields, setFields] = useState({});
+    const [error, setError] = useState('');
+
     const navigate = useNavigate();
 
     const handleChange =(e) => {
@@ -28,7 +30,7 @@ function Login() {
                 console.log(error)
                 switch (error.code) {
                     case 'auth/invalid-credential': 
-                        toast.error('usuário ou senha incorretos')
+                        setError('usuário ou senha incorretos')
                         break;
                  
                     default: console.log('houve um erro fora do escopo') ;
@@ -36,7 +38,7 @@ function Login() {
                 
             })
         } else {
-            toast.error('preencha todos os campos')
+            setError('preencha todos os campos')
         }
         
     }
@@ -63,6 +65,7 @@ function Login() {
                 />
                 <button type='submit'>Acessar</button>
             </form>
+            <p className='erro'>{error}</p>
             <Link to='/cadastro'>Não possui uma conta? <strong>Cadastre-se</strong></Link>
             
         </div>

@@ -9,6 +9,8 @@ import {toast} from 'react-toastify'
 
 function Cadastro() {
     const [fields, setFields] = useState({});
+    const [error, setError] = useState('');
+
     const navigate = useNavigate();
 
     const handleChange =(e) => {
@@ -28,10 +30,10 @@ function Cadastro() {
                 console.log(error)
                 switch (error.code) {
                     case 'auth/weak-password': 
-                        toast.error('a senha deve ter no minimo 6 digitos')
+                        setError('a senha deve ter no minimo 6 digitos')
                         break;
                     case 'auth/invalid-email': 
-                        toast.error('insira um email válido')
+                        setError('insira um email válido')
                         break;
                  
                     default: console.log('houve um erro fora do escopo') ;
@@ -40,7 +42,7 @@ function Cadastro() {
             })
         }
         else {
-            toast.error('preencha todos os campos')
+            setError('preencha todos os campos')
         }
     }
 
@@ -67,6 +69,7 @@ function Cadastro() {
                 />
                 <button type='submit'>Criar conta</button>
             </form>
+            <p className='erro'>{error}</p>
             <Link to='/'>Já possui uma conta? <strong>Entrar</strong></Link>
         </div>
     )
