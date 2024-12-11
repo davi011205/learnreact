@@ -35,6 +35,9 @@ function Cadastro() {
                     case 'auth/invalid-email': 
                         setError('insira um email válido')
                         break;
+                    case 'auth/email-already-in-use': 
+                        setError('ja existe uma conta com este email')
+                        break;
                  
                     default: console.log('houve um erro fora do escopo') ;
                 }
