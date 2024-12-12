@@ -11,6 +11,7 @@ import {
     orderBy,
     where,
     doc,
+    getDoc
  } from 'firebase/firestore'
 
 import './home.css'
@@ -19,9 +20,12 @@ import { toast } from 'react-toastify';
 
 
 function Home() {
-    const [tarefa, setTarefa] = useState('');
     const [user, setUser] = useState({});
+    const [tarefa, setTarefa] = useState('');
     const [tarefas, setTarefas] = useState([]);
+    const [editTarefa, setEditTarefa] = useState({});
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [willRemoved, setWillRemoved] = useState('');
 
     useEffect(() => {
         async function loadUser() {
@@ -55,6 +59,11 @@ function Home() {
     async function createTarefa(e) {
         e.preventDefault()
 
+        if(editTarefa?.id) {
+            updateTarefa();
+            return;
+        }
+
         await addDoc(collection(db, 'tarefas'), {
             tarefa: tarefa,
             dataTarefa: new Date(),
@@ -69,26 +78,59 @@ function Home() {
         })
 
     }
+
+    async function editarTarefa(item) {
+        setTarefa(item.tarefa)  
+        setEditTarefa(item)
+    }
+
+    async function updateTarefa() {
+        await updateDoc(doc(db, 'tarefas', editTarefa?.id), {
+            tarefa: tarefa,
+            dataTarefa: new Date()
+        })
+        .then(() => {
+            toast.success('tarefa atualizda')
+            setTarefa('')
+            setEditTarefa('')
+        })
+    }
     
     async function deleteTarefa(id) {
         await deleteDoc(doc(db, 'tarefas', id))
+        .then(() => {
+            setConfirmDelete(false)
+            toast.success('tarefa deletada com sucesso')
+        })
+        .catch(() => {
+            toast.error('nao foi possivel deletar a tarefa')
+        })
     }
 
     async function logout() {
         await signOut(auth)
     }
 
+    function tratarExclusao(id) {
+        setConfirmDelete(true)
+        setWillRemoved(id)
+    }
+
     return  (
         <div className="container-home">
-             <button onClick={logout} className='btn-logout'>Sair</button>
+            <button onClick={logout} className='btn-logout'>Sair</button>
             <h1>Minhas Tarefas</h1>
             <form className='form-tarefas' onSubmit={createTarefa}>
                 <textarea 
                     placeholder='Digite sua tarefa...'
                     value={tarefa}
                     onChange={ (e) => setTarefa(e.target.value) }
-                />
-                <button type='submit'>Registrar Tarefa</button>
+                    />
+                {Object.keys(editTarefa).length > 0 ? (
+                    <button type='submit'>Atualizar Tarefa</button>
+                ) : (
+                    <button type='submit'>Registrar Tarefa</button>
+                )}
             </form>
 
                 {tarefas.map((tarefa) => {
@@ -96,13 +138,24 @@ function Home() {
                         <article className='list' key={tarefa.id}>
                             <p>{tarefa.tarefa}</p>
                             <div>
-                                <button>editar</button>
-                                <button className='conclui' onClick={ () => deleteTarefa(tarefa.id) }>concluir</button>
+                                <button onClick={() => editarTarefa(tarefa)}>editar</button>
+                                <button className='conclui' onClick={ () => tratarExclusao(tarefa.id) }>concluir</button>
                             </div>
                         </article>
                     )
                 })}
-
+                {confirmDelete && (
+                    <div className='exclusao'>
+                        <div className='exclusao-conteudo'>
+                            <h1>Você tem certeza?</h1>
+                            <div>
+                                <button onClick={() => deleteTarefa(willRemoved)}>sim</button>
+                                <button onClick={() => setConfirmDelete(false)}>nao</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            
         </div>
     )
 }
