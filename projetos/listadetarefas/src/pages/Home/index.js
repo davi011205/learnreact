@@ -64,18 +64,23 @@ function Home() {
             return;
         }
 
-        await addDoc(collection(db, 'tarefas'), {
-            tarefa: tarefa,
-            dataTarefa: new Date(),
-            userUid: user?.uid
-        })
-        .then(() => {
-            toast.success('tarefa cadastrada com sucesso')
-            setTarefa('')
-        })
-        .catch(() => {
-            toast.error('nao foi possivel cadastrar a tarefa')
-        })
+        if(tarefa) {
+            await addDoc(collection(db, 'tarefas'), {
+                tarefa: tarefa,
+                dataTarefa: new Date(),
+                userUid: user?.uid
+            })
+            .then(() => {
+                toast.success('tarefa cadastrada com sucesso')
+                setTarefa('')
+            })
+            .catch(() => {
+                toast.error('nao foi possivel cadastrar a tarefa')
+            })
+        } else {
+            toast.error('digite uma tarefa')
+        }
+
 
     }
 
