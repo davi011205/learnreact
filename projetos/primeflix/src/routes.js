@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import {  Routes, Route } from 'react-router-dom';
 
 import Header from './components/Header';
 
@@ -10,7 +10,7 @@ import Erro from './pages/Erro';
 
 function RoutesApp() {                                                  
     return(
-        <BrowserRouter>
+        <>
             <Header></Header>
             <Routes>
                 <Route path='/' element={ <Home/> }/>
@@ -18,7 +18,7 @@ function RoutesApp() {
                 <Route path='/favoritos' element={ <Favoritos/> }/>
                 <Route path='*' element={ <Erro/> }/>
             </Routes>
-        </BrowserRouter>
+        </>
     )
 }
 
