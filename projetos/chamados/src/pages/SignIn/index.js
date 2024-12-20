@@ -11,7 +11,6 @@ function SignIn() {
 
     const handleChange = (e) => {
         setFields({...fields, [e.target.name]: e.target.value} )
-        
     }
 
     function loginUser(e) {
@@ -26,23 +25,24 @@ function SignIn() {
                     <img src={logo} alt=''></img>
                 </div>
 
-            <form onSubmit={loginUser}>
-                <h1>Entrar</h1>
+                <form onSubmit={loginUser}>
+                    <h1>Entrar</h1>
 
-                <input type='email'
-                    placeholder='Email'
-                    name='email'
-                    value={fields.email || ''}
-                    onChange={handleChange}
-                />
-                <input type='text'
-                    placeholder='******'
-                    name='password'
-                    value={fields.password || ''}
-                    onChange={handleChange}
-                />
-                <button type='submit'>Acessar</button>
-            </form>
+                    <input type='email'
+                        placeholder='Email'
+                        name='email'
+                        value={fields.email || ''}
+                        onChange={handleChange}
+                    />
+                    <input type='password'
+                        placeholder='******'
+                        name='password'
+                        value={fields.password || ''}
+                        onChange={handleChange}
+                    />
+                    {error}
+                    <button type='submit'>Acessar</button>
+                </form>
                 <Link to='/register'>Não possui uma conta? <strong>Cadastre-se</strong></Link>
             </div>
         </div>

@@ -27,21 +27,27 @@ function SignUp() {
                 </div>
 
                 <form onSubmit={loginUser}>
-                    <h1>Entrar</h1>
+                    <h1>Cadastrar nova conta</h1>
 
+                    <input type='text'
+                        placeholder='Nome'
+                        name='nome'
+                        value={fields.nome || ''}
+                        onChange={handleChange}
+                    />
                     <input type='email'
                         placeholder='Email'
                         name='email'
                         value={fields.email || ''}
                         onChange={handleChange}
                     />
-                    <input type='text'
-                        placeholder='******'
+                    <input type='password'
+                        placeholder='Senha'
                         name='password'
                         value={fields.password || ''}
                         onChange={handleChange}
                     />
-                    <button type='submit'>Acessar</button>
+                    <button type='submit'>Criar</button>
                 </form>
 
                 <Link to='/'>Já possui uma conta? <strong>Entrar</strong></Link>

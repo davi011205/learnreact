@@ -1,4 +1,4 @@
-:root{
+:root {
     --corFundo: #121212;
     --destaqueLogin: #181c2e;
 }
@@ -11,7 +11,7 @@
     padding: 0 12px;
     background-color: var(--corFundo);
 
-    .login{
+    .login {
         width: 600px;
         display: flex;
         flex-direction: column;
@@ -20,6 +20,10 @@
         gap: 20px;
         background-color: #eaeaec;
         padding-bottom: 20px;
+
+        a {
+            color: var(--destaqueLogin);
+        }
         
         .login-area {
             width: 100%;
@@ -59,6 +63,7 @@
             button {
                 background-color: var(--destaqueLogin);
                 color: white;
+                font-size: 1.1rem;
             }
         }
     }
