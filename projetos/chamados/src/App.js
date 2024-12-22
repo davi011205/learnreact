@@ -1,6 +1,8 @@
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import RoutesApp from "./routes";
+import AuthProvider from './contexts/auth';
+import { BrowserRouter } from 'react-router-dom';
 
 function App() {
   return (
@@ -18,7 +20,11 @@ function App() {
           pauseOnHover
           theme="light"
         />
-        <RoutesApp></RoutesApp>
+        <BrowserRouter>
+          <AuthProvider>
+            <RoutesApp></RoutesApp>
+          </AuthProvider>
+        </BrowserRouter>
       </>
     </div>
   );

@@ -42,7 +42,7 @@
 //   }
 
 //   if(!signed){
-//     return <Navigate to="/"/>
+//     return <Navigate to="/dashboard"/>
 //   }
 
 //   return children; //retorna o que tem dentro da tag, no caso o componente home

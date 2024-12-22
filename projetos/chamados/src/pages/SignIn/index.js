@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { toast } from 'react-toastify';
+import { auth } from '../../services/firebaseConfig';
 
 import './signin.css';
 import logo from '../../assets/logo.png'
@@ -8,14 +11,36 @@ import logo from '../../assets/logo.png'
 function SignIn() {
     const [fields, setFields] = useState({});
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFields({...fields, [e.target.name]: e.target.value} )
     }
 
-    function loginUser(e) {
+    async function loginUser(e) {
         e.preventDefault()
-        console.log(fields)
+
+        if(fields.email && fields.password) {
+            await signInWithEmailAndPassword(auth, fields.email, fields.password)
+            .then(() => {
+                toast.success('Bem vindo ao sistema')
+                navigate('/dashboard', {replace: true})
+            })
+            .catch((error) => {
+                console.log(error)
+                switch (error.code) {
+                    case 'auth/invalid-credential': 
+                        setError('usuário ou senha incorretos')
+                        break;
+                 
+                    default: console.log('houve um erro fora do escopo') ;
+                }
+                
+            })
+        } else {
+            setError('preencha todos os campos')
+        }
+        
     }
 
     return(
@@ -40,7 +65,7 @@ function SignIn() {
                         value={fields.password || ''}
                         onChange={handleChange}
                     />
-                    {error}
+                    <p className='error'>{error}</p>
                     <button type='submit'>Acessar</button>
                 </form>
                 <Link to='/register'>Não possui uma conta? <strong>Cadastre-se</strong></Link>

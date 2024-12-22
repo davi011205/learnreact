@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom'
+import { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../../contexts/auth';
 
 import '../SignIn/signin.css';
 import logo from '../../assets/logo.png'
@@ -7,16 +8,21 @@ import logo from '../../assets/logo.png'
 
 function SignUp() {
     const [fields, setFields] = useState({});
-    const [error, setError] = useState('');
+    const { signUp, error, setError, loadingAuth } = useContext(AuthContext);
 
     const handleChange = (e) => {
         setFields({...fields, [e.target.name]: e.target.value} )
-        
     }
 
-    function loginUser(e) {
+    async function handleSignUp(e) {
         e.preventDefault()
-        console.log(fields)
+
+        if(fields.email && fields.password && fields.name) {
+            await signUp(fields.email, fields.password, fields.name)
+        }
+        else {
+            setError('preencha todos os campos')
+        }
     }
 
     return(
@@ -26,13 +32,13 @@ function SignUp() {
                     <img src={logo} alt=''></img>
                 </div>
 
-                <form onSubmit={loginUser}>
+                <form onSubmit={handleSignUp}>
                     <h1>Cadastrar nova conta</h1>
 
                     <input type='text'
                         placeholder='Nome'
-                        name='nome'
-                        value={fields.nome || ''}
+                        name='name'
+                        value={fields.name || ''}
                         onChange={handleChange}
                     />
                     <input type='email'
@@ -47,7 +53,8 @@ function SignUp() {
                         value={fields.password || ''}
                         onChange={handleChange}
                     />
-                    <button type='submit'>Criar</button>
+                    <p className='error'>{error}</p>
+                    <button type='submit'>{loadingAuth ? 'criando...' : 'criar'}</button>
                 </form>
 
                 <Link to='/'>Já possui uma conta? <strong>Entrar</strong></Link>
